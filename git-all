@@ -112,16 +112,19 @@ for file in $(ls); do
 
             if git diff-index --quiet HEAD -- ; then
                 if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
-                    if [ -x "deploy-update.sh" ] ; then
+                    if [ -x "${REPOLOC}/${file}/deploy-update.sh" ] ; then
                         echo
                         ./deploy-update.sh -b $2
                     else
-                        echo "deploy-update.sh not found" 
-                fi
+                        echo "deploy-update.sh not found"
+                    fi
 
                 else
                     echo 'No changes'
                 fi
+            else
+                echo 'Changed files:'
+                git status -s  
             fi
 
         else
