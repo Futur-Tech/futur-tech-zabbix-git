@@ -35,10 +35,9 @@ $S_LOG -d "$S_NAME" "The script will run for $OS"
 #############################
 #############################
 
-echo
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================================================================="
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "======================     SUDOERS CONFIGURATION    ==========================="
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================================================================="
+$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
+$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==== SUDOERS CONFIGURATION ===="
+$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 
 case $OS in
     Linux)
@@ -60,9 +59,8 @@ esac
 
 cat $SUDOERS_ETC | $S_LOG -d "$S_NAME" -d "$SUDOERS_ETC" -i 
 
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================================================================="
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================================================================="
-echo
+$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
+$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 
 $S_LOG -d "$S_NAME" "End $S_NAME"
 
