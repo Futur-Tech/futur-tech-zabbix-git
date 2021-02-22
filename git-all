@@ -36,7 +36,7 @@ if [[ $# = 0 ]] || [[ $1 = -h ]] ; then
 fi
 
 cd $REPOLOC
-if [[ $1 == qfetch ]] || [[ $1 == fetch ]] || [[ $1 == status ]]; then
+if [[ $1 == qfetch ]] || [[ $1 == fetch ]] || [[ $1 == status ]] || [[ $1 == deploy-update ]]; then
     for file in $(ls); do
         if [[ -d $REPOLOC/$file/.git ]]; then
             cd $REPOLOC/$file
@@ -111,14 +111,17 @@ for file in $(ls); do
             cd $REPOLOC/$file
 
             if [ -x "deploy-update.sh" ] ; then
-                echo
-                ./deploy-update.sh -b $2
-                echo
-                echo
+                if git diff-index --quiet HEAD -- ; then
+                    if [[ -n $(git rev-list origin...HEAD) ]]; then
+                        echo
+                        ./deploy-update.sh -b $2
+                    else
+                        echo 'No changes'
+                    fi
+                fi
             else
                 echo -n "deploy-update.sh not found" 
             fi
-
 
         else
             echo "Option Not found..."
