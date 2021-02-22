@@ -110,17 +110,18 @@ for file in $(ls); do
             echo -n "Deploying updates for $file: "
             cd $REPOLOC/$file
 
-            if [ -x "deploy-update.sh" ] ; then
-                if git diff-index --quiet HEAD -- ; then
-                    if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
+            if git diff-index --quiet HEAD -- ; then
+                if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
+                    if [ -x "deploy-update.sh" ] ; then
                         echo
                         ./deploy-update.sh -b $2
                     else
-                        echo 'No changes'
-                    fi
+                        echo "deploy-update.sh not found" 
                 fi
-            else
-                echo -n "deploy-update.sh not found" 
+
+                else
+                    echo 'No changes'
+                fi
             fi
 
         else
