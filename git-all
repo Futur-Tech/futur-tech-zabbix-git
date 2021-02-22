@@ -112,7 +112,7 @@ for file in $(ls); do
 
             if [ -x "deploy-update.sh" ] ; then
                 if git diff-index --quiet HEAD -- ; then
-                    if [[ -n $(git rev-list origin...HEAD) ]]; then
+                    if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
                         echo
                         ./deploy-update.sh -b $2
                     else
@@ -123,7 +123,7 @@ for file in $(ls); do
                 echo -n "deploy-update.sh not found" 
             fi
             echo 
-            
+
         else
             echo "Option Not found..."
             exit 1 
