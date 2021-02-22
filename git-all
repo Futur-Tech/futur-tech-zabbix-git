@@ -122,7 +122,6 @@ for file in $(ls); do
             else
                 echo -n "deploy-update.sh not found" 
             fi
-            echo 
 
         else
             echo "Option Not found..."
