@@ -31,7 +31,7 @@ if [[ $# = 0 ]] || [[ $1 = -h ]] ; then
     echo " fetch: Fetches all repos in the folder"
     echo " qfetch: Fetches all repos in the folder (somewhat) quietly"
     echo " merge: Merges all repos in the folder (origin)"
-    echo " deploy-update: run \"./deploy-update -b \$2\" on each repository"
+    echo " deploy-update: run \"./deploy-update.sh -b \$2\" on each repository"
     exit 0
 fi
 
