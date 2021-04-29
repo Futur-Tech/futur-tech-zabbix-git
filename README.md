@@ -18,7 +18,7 @@ If not empty then it means repository need update.
         fetch: Fetches all repos in the folder
         qfetch: Fetches all repos in the folder (somewhat) quietly
         merge: Merges all repos in the folder (origin)
-        deploy-update: run ".deploy-update -b $2 on each repository
+        deploy-update: run "./deploy-update.sh -b $2 on each repository
 
 ## deploy-update.sh
   
