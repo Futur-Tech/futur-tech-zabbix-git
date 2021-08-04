@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-08-04T10:51:52Z</date>
+    <date>2021-08-04T11:08:14Z</date>
     <groups>
         <group>
             <name>Templates/Futur-Tech/Modules Linux</name>
@@ -26,7 +26,7 @@
                 <item>
                     <name>Git repository updates</name>
                     <type>ZABBIX_ACTIVE</type>
-                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$|^Warning: Permanently added the RSA host key for .* to the list of known hosts.$&quot;]</key>
+                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$|^Warning: Permanently added the RSA host key for .* to the list of known hosts\.$&quot;]</key>
                     <delay>5h</delay>
                     <trends>0</trends>
                     <value_type>TEXT</value_type>
