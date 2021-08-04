@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-08-04T10:51:52Z</date>
+    <groups>
+        <group>
+            <name>Templates/Futur-Tech/Modules Linux</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Futur-Tech Module Git-All Status</template>
+            <name>Template Futur-Tech Module Git-All Status</name>
+            <description>https://github.com/Futur-Tech/futur-tech-zabbix-git</description>
+            <groups>
+                <group>
+                    <name>Templates/Futur-Tech/Modules Linux</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Software Updates</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Git repository updates</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$|^Warning: Permanently added the RSA host key for .* to the list of known hosts.$&quot;]</key>
+                    <delay>5h</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>The script git-all will check all the git repositories located in {$GIT_SRC}</description>
+                    <applications>
+                        <application>
+                            <name>Software Updates</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <expression>{iregexp(.+)}=1</expression>
+                            <name>Git repository not up-to-date</name>
+                            <opdata>{{ITEM.VALUE}.regsub(&quot;(.*)&quot;, \1)}</opdata>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$GIT_SRC}</macro>
+                    <value>/usr/local/src</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
