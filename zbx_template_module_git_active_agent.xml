@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-08-04T11:08:14Z</date>
+    <date>2021-10-15T09:50:22Z</date>
     <groups>
         <group>
             <name>Templates/Futur-Tech/Modules Linux</name>
@@ -26,7 +26,7 @@
                 <item>
                     <name>Git repository updates</name>
                     <type>ZABBIX_ACTIVE</type>
-                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$|^Warning: Permanently added the RSA host key for .* to the list of known hosts\.$&quot;]</key>
+                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$&quot;]</key>
                     <delay>5h</delay>
                     <trends>0</trends>
                     <value_type>TEXT</value_type>
@@ -44,9 +44,22 @@
                     </preprocessing>
                     <triggers>
                         <trigger>
-                            <expression>{iregexp(.+)}=1</expression>
+                            <expression>{iregexp(Repo .+: Needs pushing:)}=1</expression>
+                            <name>Git repository need pushing to main branch</name>
+                            <opdata>{{ITEM.VALUE}.regsub(&quot;([\s\S]*)&quot;, \1)}</opdata>
+                            <priority>INFO</priority>
+                            <description>This is normal, when a repo is not running on the main branch (usually during development or testing)</description>
+                            <dependencies>
+                                <dependency>
+                                    <name>Git repository not up-to-date</name>
+                                    <expression>{Template Futur-Tech Module Git-All Status:system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$&quot;].regexp(Repo .+: Needs merging:)}=1</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                        <trigger>
+                            <expression>{regexp(Repo .+: Needs merging:)}=1</expression>
                             <name>Git repository not up-to-date</name>
-                            <opdata>{{ITEM.VALUE}.regsub(&quot;(.*)&quot;, \1)}</opdata>
+                            <opdata>{{ITEM.VALUE}.regsub(&quot;([\s\S]*)&quot;, \1)}</opdata>
                             <priority>WARNING</priority>
                         </trigger>
                     </triggers>
