@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-10-15T09:50:22Z</date>
+    <date>2021-10-15T09:56:15Z</date>
     <groups>
         <group>
             <name>Templates/Futur-Tech/Modules Linux</name>
@@ -46,7 +46,7 @@
                         <trigger>
                             <expression>{iregexp(Repo .+: Needs pushing:)}=1</expression>
                             <name>Git repository need pushing to main branch</name>
-                            <opdata>{{ITEM.VALUE}.regsub(&quot;([\s\S]*)&quot;, \1)}</opdata>
+                            <opdata>{{ITEM.VALUE}.regsub(&quot;(.*)&quot;, \1)}</opdata>
                             <priority>INFO</priority>
                             <description>This is normal, when a repo is not running on the main branch (usually during development or testing)</description>
                             <dependencies>
@@ -59,7 +59,7 @@
                         <trigger>
                             <expression>{regexp(Repo .+: Needs merging:)}=1</expression>
                             <name>Git repository not up-to-date</name>
-                            <opdata>{{ITEM.VALUE}.regsub(&quot;([\s\S]*)&quot;, \1)}</opdata>
+                            <opdata>{{ITEM.VALUE}.regsub(&quot;(.*)&quot;, \1)}</opdata>
                             <priority>WARNING</priority>
                         </trigger>
                     </triggers>
