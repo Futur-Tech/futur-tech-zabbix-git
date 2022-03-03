@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
-# Deploy script Zabbix Agent for Debian v1.0
-
 source "$(dirname "$0")/ft-util/ft_util_inc_var"
 
 $S_LOG -d $S_NAME "Start $S_NAME $*"
 
-#############################
-#############################
-## CHECK OS
-#############################
-#############################
+echo "
+  CHECK OS
+------------------------------------------"
 
 if [ -d "/etc/zabbix" ]
 then
@@ -29,14 +25,11 @@ SUDOERS_ETC="/etc/sudoers.d/ft-git"
 
 $S_LOG -d "$S_NAME" "The script will run for $OS" 
 
-#############################
-#############################
-## SETUP SUDOER FILES
-#############################
-#############################
 
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==== SUDOERS CONFIGURATION ===="
+echo "
+  SETUP SUDOER FILES
+------------------------------------------"
+
 $S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 
 case $OS in
@@ -59,7 +52,6 @@ esac
 
 cat $SUDOERS_ETC | $S_LOG -d "$S_NAME" -d "$SUDOERS_ETC" -i 
 
-$S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 $S_LOG -d $S_NAME -d "$SUDOERS_ETC" "==============================="
 
 $S_LOG -d "$S_NAME" "End $S_NAME"
