@@ -115,8 +115,10 @@ for file in $(ls); do
                     if [ -x "${REPOLOC}/${file}/deploy-update.sh" ] ; then
                         echo
                         ./deploy-update.sh -b $2 1> >(sed "s/^/    |__ /") 2> >(sed "s/^/    |__ /" >&2)
+                        echo
                     else
                         echo "deploy-update.sh not found"
+                        echo
                     fi
 
                 else
