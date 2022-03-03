@@ -114,7 +114,7 @@ for file in $(ls); do
                 if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
                     if [ -x "${REPOLOC}/${file}/deploy-update.sh" ] ; then
                         echo
-                        ./deploy-update.sh -b $2
+                        ./deploy-update.sh -b $2 1> >(sed "s/^/    |__ /") 2> >(sed "s/^/    |__ /" >&2)
                     else
                         echo "deploy-update.sh not found"
                     fi
