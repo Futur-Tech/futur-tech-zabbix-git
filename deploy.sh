@@ -28,7 +28,7 @@ then
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all status" >> "${SUDOERS_ETC}"
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all deploy-update main" >> "${SUDOERS_ETC}"
     chmod 0440 "$SUDOERS_ETC"
-esac
+fi
 
 cat $SUDOERS_ETC | $S_LOG -d "$S_NAME" -d "$SUDOERS_ETC" -i 
 
