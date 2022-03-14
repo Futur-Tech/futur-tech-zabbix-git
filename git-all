@@ -52,6 +52,10 @@ if [[ $1 == qfetch ]] || [[ $1 == fetch ]] || [[ $1 == status ]] || [[ $1 == dep
     echo "done"
 fi
 
+if [[ $1 == qfetch ]]; then
+    exit
+fi    
+
 cd $REPOLOC
 for file in $(ls); do
     if [[ -d $REPOLOC/$file/.git ]]; then 
@@ -87,7 +91,6 @@ for file in $(ls); do
             else
                 echo 'Up to date.'
             fi
-
 
         elif [[ $1 == merge ]]; then
             echo -n "Merging $file: "

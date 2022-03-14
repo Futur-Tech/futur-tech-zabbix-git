@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-10-15T10:16:05Z</date>
+    <date>2022-03-14T01:00:09Z</date>
     <groups>
         <group>
             <name>Templates/Futur-Tech/Modules Linux</name>
@@ -24,13 +24,33 @@
             </applications>
             <items>
                 <item>
-                    <name>Git repository updates</name>
+                    <name>Git repository fetch</name>
                     <type>ZABBIX_ACTIVE</type>
-                    <key>system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$&quot;]</key>
-                    <delay>5h</delay>
+                    <key>system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all fetch]</key>
+                    <delay>8h</delay>
                     <trends>0</trends>
                     <value_type>TEXT</value_type>
-                    <description>The script git-all will check all the git repositories located in {$GIT_SRC}</description>
+                    <description>The script git-all will fetch all the git repositories located in {$GIT_SRC}</description>
+                    <applications>
+                        <application>
+                            <name>Software Updates</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <name>Git repository status</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE &quot;^Repo .* No changes$&quot;]</key>
+                    <delay>15m</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>The script git-all will check the status of all the git repositories located in {$GIT_SRC}</description>
                     <applications>
                         <application>
                             <name>Software Updates</name>
@@ -52,7 +72,7 @@
                             <dependencies>
                                 <dependency>
                                     <name>Git repository not up-to-date</name>
-                                    <expression>{Template Futur-Tech Module Git-All Status:system.run[cd &quot;{$GIT_SRC}/futur-tech-zabbix-git&quot; ; sudo ./git-all status | grep -vE &quot;^Waiting for all repos to report: done$|^Repo .* No changes$&quot;].regexp(Repo .+: Needs merging:)}=1</expression>
+                                    <expression>{Template Futur-Tech Module Git-All Status:system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE &quot;^Repo .* No changes$&quot;].regexp(Repo .+: Needs merging:)}=1</expression>
                                 </dependency>
                             </dependencies>
                         </trigger>

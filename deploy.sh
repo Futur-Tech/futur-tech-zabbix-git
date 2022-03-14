@@ -17,16 +17,14 @@ then
     echo "Defaults:zabbix !requiretty" | sudo EDITOR='tee' visudo --file=$SUDOERS_ETC &>/dev/null
     echo "zabbix ALL=(ALL) NOPASSWD:/usr/bin/git" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/deploy-update.sh" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
-    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all status" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
-    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all deploy-update main" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
+    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all *" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
 
 elif [ -x /usr/syno/sbin/synoservice ] # Synology DSM
 then
     echo "Defaults:zabbix !requiretty" > "${SUDOERS_ETC}"
     echo "zabbix ALL=(ALL) NOPASSWD:/bin/git" >> "${SUDOERS_ETC}"
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/deploy-update.sh" >> "${SUDOERS_ETC}"
-    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all status" >> "${SUDOERS_ETC}"
-    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all deploy-update main" >> "${SUDOERS_ETC}"
+    echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all *" >> "${SUDOERS_ETC}"
     chmod 0440 "$SUDOERS_ETC"
 fi
 
