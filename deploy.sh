@@ -19,7 +19,7 @@ then
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/deploy-update.sh" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
     echo "zabbix ALL=(ALL) NOPASSWD:${S_DIR_PATH}/git-all *" | sudo EDITOR='tee -a' visudo --file=$SUDOERS_ETC &>/dev/null
 
-elif [ -x /usr/syno/sbin/synoservice ] # Synology DSM
+elif uname --all | grep synology >/dev/null # Synology DSM
 then
     echo "Defaults:zabbix !requiretty" > "${SUDOERS_ETC}"
     echo "zabbix ALL=(ALL) NOPASSWD:/bin/git" >> "${SUDOERS_ETC}"
