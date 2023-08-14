@@ -31,4 +31,11 @@ sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all fetch"
 sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all qstatus"
 show_bak_diff_rm "/etc/sudoers.d/${app_name}"
 
+echo "
+  RESTART ZABBIX LATER
+------------------------------------------"
+
+echo "systemctl restart zabbix-agent*" | at now + 1 min &>/dev/null ## restart zabbix agent with a delay
+$S_LOG -s $? -d "$S_NAME" "Scheduling Zabbix Agent Restart"
+
 exit
