@@ -11,10 +11,10 @@ if [ -f /etc/debian_version ]; then # Debian
   SETUP SUDOER FILES
 ------------------------------------------"
     bak_if_exist "/etc/sudoers.d/${app_name}"
-    sudoersd_reset_file "$app_name" "zabbix"
-    sudoersd_addto_file "$app_name" "zabbix" "${S_DIR_PATH}/deploy-update.sh"
-    sudoersd_addto_file "$app_name" "zabbix" "${S_DIR_PATH}/git-all fetch"
-    sudoersd_addto_file "$app_name" "zabbix" "${S_DIR_PATH}/git-all qstatus"
+    sudoersd_reset_file $app_name zabbix
+    sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/deploy-update.sh"
+    sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all fetch"
+    sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all qstatus"
     show_bak_diff_rm "/etc/sudoers.d/${app_name}"
 fi
 
