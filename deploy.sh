@@ -10,8 +10,8 @@ app_name="ft-git"
 $(which zabbix_agent2 >/dev/null) && zbx_conf_agent_d="/etc/zabbix/zabbix_agent2.d"
 $(which zabbix_agentd >/dev/null) && zbx_conf_agent_d="/etc/zabbix/zabbix_agentd.conf.d"
 if [ ! -d "${zbx_conf_agent_d}" ]; then
-    $S_LOG -s warn -d $S_NAME "${zbx_conf_agent_d} Zabbix Include directory not found"
-    exit 1
+  $S_LOG -s warn -d $S_NAME "${zbx_conf_agent_d} Zabbix Include directory not found"
+  exit 1
 fi
 
 echo "
@@ -29,6 +29,8 @@ sudoersd_reset_file $app_name zabbix
 sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/deploy-update.sh"
 sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all fetch"
 sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all qstatus"
+sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all status"
+sudoersd_addto_file $app_name zabbix "${S_DIR_PATH}/git-all deploy-update main"
 show_bak_diff_rm "/etc/sudoers.d/${app_name}"
 
 echo "
