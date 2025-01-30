@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2023-08-03T17:33:07Z'
+  date: '2025-01-30T19:16:54Z'
   groups:
     - uuid: 22fefe9c6af648aea42d4e8522fd123a
       name: 'Templates/Futur-Tech/Modules Linux'
@@ -15,45 +15,45 @@ zabbix_export:
         - uuid: 2201c63b63084597a6b762d1ac1363b2
           name: 'Git repository fetch'
           type: ZABBIX_ACTIVE
-          key: 'system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all fetch]'
+          key: gitall.fetch
           delay: 8h
           trends: '0'
           value_type: TEXT
-          description: 'The script git-all will fetch all the git repositories located in {$GIT_SRC}'
+          description: 'The script git-all will fetch all the git repositories.'
           preprocessing:
-            - type: DISCARD_UNCHANGED
+            - type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
           tags:
             - tag: Application
               value: 'Software Updates'
         - uuid: e86f88a1d0a0406790ef73489d0b247b
           name: 'Git repository status'
           type: ZABBIX_ACTIVE
-          key: 'system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE "^Repo .* No changes$"]'
+          key: gitall.qstatus.changes
           delay: 15m
           trends: '0'
           value_type: TEXT
           description: 'The script git-all will check the status of all the git repositories located in {$GIT_SRC}'
           preprocessing:
-            - type: DISCARD_UNCHANGED
+            - type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
           tags:
             - tag: Application
               value: 'Software Updates'
           triggers:
             - uuid: 153aa186c87b4b68813bbed22173aa23
-              expression: 'find(/Futur-Tech Module Git-All Status/system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE "^Repo .* No changes$"],,"iregexp","Repo .+: Needs pushing:")=1'
+              expression: 'find(/Futur-Tech Module Git-All Status/gitall.qstatus.changes,,"iregexp","Repo .+: Needs pushing:")=1'
               name: 'Git repository need pushing to main branch'
               opdata: 'Log: {ITEM.LASTVALUE1}'
               priority: INFO
               description: 'This is normal, when a repo is not running on the main branch (usually during development or testing)'
               dependencies:
                 - name: 'Git repository not up-to-date'
-                  expression: 'find(/Futur-Tech Module Git-All Status/system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE "^Repo .* No changes$"],,"regexp","Repo .+: Needs merging:")=1'
+                  expression: 'find(/Futur-Tech Module Git-All Status/gitall.qstatus.changes,,"regexp","Repo .+: Needs merging:")=1'
             - uuid: f64642a190964e018225e9f39294266d
-              expression: 'find(/Futur-Tech Module Git-All Status/system.run[sudo {$GIT_SRC}/futur-tech-zabbix-git/git-all qstatus | grep -vE "^Repo .* No changes$"],,"regexp","Repo .+: Needs merging:")=1'
+              expression: 'find(/Futur-Tech Module Git-All Status/gitall.qstatus.changes,,"regexp","Repo .+: Needs merging:")=1'
               name: 'Git repository not up-to-date'
               opdata: 'Log: {ITEM.LASTVALUE1}'
               priority: WARNING
