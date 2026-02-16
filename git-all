@@ -19,9 +19,6 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # This should be the location of your directory that has repos in it
 REPOLOC=$DIR/..
 
-# Variables for spawned processes
-spawned=()
-
 if [[ $# = 0 ]] || [[ $1 = -h ]] ; then
     echo "git all [option]"
     echo "Options:"
@@ -35,31 +32,35 @@ if [[ $# = 0 ]] || [[ $1 = -h ]] ; then
     exit 0
 fi
 
-cd $REPOLOC
+cd "$REPOLOC" || exit 1
 if [[ $1 == qfetch ]] || [[ $1 == fetch ]] || [[ $1 == status ]] || [[ $1 == deploy-update ]]; then
-    for file in $(ls); do
-        if [[ -d $REPOLOC/$file/.git ]]; then
-            cd $REPOLOC/$file
-            git fetch -q &
-            spawned+=($!)
+    FETCH_FAILED=0
+    for repo_path in "$REPOLOC"/*; do
+        if [[ -d "$repo_path/.git" ]]; then
+            if ! (
+                cd "$repo_path" || exit 1
+                git fetch -q
+            ); then
+                FETCH_FAILED=1
+            fi
         fi
     done
 
-    echo -n "Waiting for all repos to report: "
-    for pid in ${spawned[@]}; do
-        wait $pid
-    done
-    echo "done"
+    if [[ $FETCH_FAILED -ne 0 ]]; then
+        echo "One or more fetch operations failed."
+        exit 1
+    fi
 fi
 
 if [[ $1 == qfetch ]]; then
     exit
 fi    
 
-cd $REPOLOC
-for file in $(ls); do
-    if [[ -d $REPOLOC/$file/.git ]]; then 
-        cd $REPOLOC/$file
+cd "$REPOLOC" || exit 1
+for repo_path in "$REPOLOC"/*; do
+    if [[ -d "$repo_path/.git" ]]; then 
+        file="$(basename "$repo_path")"
+        cd "$repo_path" || exit 1
 
         git checkout &>/dev/null
         
@@ -94,7 +95,6 @@ for file in $(ls); do
 
         elif [[ $1 == merge ]]; then
             echo -n "Merging $file: "
-            cd $REPOLOC/$file
             if [[ -n $(git rev-list HEAD..origin) ]]; then
                 git merge origin
             else
@@ -103,7 +103,6 @@ for file in $(ls); do
 
         elif [[ $1 == pull ]]; then
             echo -n "Pulling $file: "
-            cd $REPOLOC/$file
 
             if ! git pull; then
                 exit 1
@@ -111,13 +110,12 @@ for file in $(ls); do
         
         elif [[ $1 == deploy-update ]] && [ -n "$2" ] ; then
             echo -n "Deploying updates for $file: "
-            cd $REPOLOC/$file
 
             if git diff-index --quiet HEAD -- ; then
                 if [[ -n $(git rev-list origin...HEAD) ]] && [[ -z $(git rev-list origin..HEAD) ]] ; then
                     if [ -x "${REPOLOC}/${file}/deploy-update.sh" ] ; then
                         echo
-                        ./deploy-update.sh -b $2 1> >(sed "s/^/    |__ /") 2> >(sed "s/^/    |__ /" >&2)
+                        ./deploy-update.sh -b "$2" 1> >(sed "s/^/    |__ /") 2> >(sed "s/^/    |__ /" >&2)
                         echo
                     else
                         echo "deploy-update.sh not found"
