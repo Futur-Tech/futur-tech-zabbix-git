@@ -1,23 +1,62 @@
 # Futur-Tech Zabbix Git Repo Monitoring
 
-You need to deploy this repo near other repos
+Zabbix module to monitor and maintain multiple local Git repositories from one host.
 
-In Zabbix server you can add the template.
+## Expected Layout
 
-## git-all script
+`git-all` scans repositories in the parent folder of this project.
 
-    git-all [option]
-    Options:
-        status: Checks all the git repos in git folder
-        qstatus: Checks all the git repos in git folder (no fetch)
-        pull: Pulls all repos in the folder
-        fetch: Fetches all repos in the folder
-        qfetch: Fetches all repos in the folder (somewhat) quietly
-        merge: Merges all repos in the folder (origin)
-        deploy-update: run "./deploy-update.sh -b $2 on each repository
+Example:
+```text
+/usr/local/src/
+  futur-tech-zabbix-git/
+  repo-a/
+  repo-b/
+```
 
-## deploy-update.sh
-  
-    ./deploy-update.sh -b main
-    
-This script will automatically pull the latest version of the branch ("main" in the example) and relaunch itself if a new version is found. Then it will run deploy.sh. Also note that any additional arguments given to this script will be passed to the deploy.sh script.
+Only directories containing `.git` are processed.
+
+## Installation
+
+1. Clone this repository next to the repositories you want to monitor.
+2. Run the deployment script:
+
+```bash
+cd /usr/local/src/futur-tech-zabbix-git
+sudo ./deploy-update.sh -b main
+```
+
+`deploy-update.sh` behavior:
+- checks out the target branch (`-b`),
+- fetches updates,
+- self-updates and re-executes if needed,
+- then runs `./deploy.sh`.
+
+`deploy.sh` installs:
+- Zabbix include file:
+  - `/etc/zabbix/zabbix_agent2.d/ft-git.conf`, or
+  - `/etc/zabbix/zabbix_agentd.conf.d/ft-git.conf`
+- sudoers rules in `/etc/sudoers.d/ft-git` for required commands.
+- delayed Zabbix agent restart (`systemctl restart zabbix-agent*` via `at`).
+
+## `git-all` Usage
+
+```bash
+./git-all [option] [branch]
+```
+
+Options:
+- `status`: fetch all repos first, then print status for each repo.
+- `qstatus`: status only (no pre-fetch).
+- `fetch`: fetch all repos, then report which ones need merging.
+- `qfetch`: quiet fetch only.
+- `pull`: run `git pull` on each repo.
+- `merge`: run `git merge origin` when updates are available.
+- `deploy-update <branch>`: run `./deploy-update.sh -b <branch>` in each clean repo that is behind origin.
+
+Examples:
+```bash
+./git-all qstatus
+./git-all fetch
+./git-all deploy-update main
+```
